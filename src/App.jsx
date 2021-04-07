@@ -4,16 +4,16 @@ import {
     AdaptivityProvider,
     Appearance,
     AppRoot,
-    Avatar,
+    Avatar, Button,
     ConfigProvider,
-    Div,
+    Div, FixedLayout,
     FormItem,
     FormLayout,
-    FormLayoutGroup,
+    FormLayoutGroup, Group,
     Input,
     Panel,
     PanelHeader,
-    PanelHeaderContent,
+    PanelHeaderContent, PromoBanner,
     Scheme,
     Separator,
     View
@@ -27,13 +27,17 @@ const App = () => {
     const [scheme, setScheme] = useState(Scheme.BRIGHT_LIGHT);
     const [grades, setGrades] = useState([]);
     const [required, setRequired] = useState(3.5);
+    const [advertisement, setAdvertisement] = useState(null);
     useEffect(() => {
         bridge.subscribe(({detail: {type, data}}) => {
             if (type === 'VKWebAppUpdateConfig') {
                 setAppearance(data.appearance || Appearance.LIGHT)
                 setScheme(data.scheme || Scheme.BRIGHT_LIGHT)
             }
+            console.log(type, data);
         });
+        if (bridge.supports("VKWebAppGetAds"))
+            bridge.send("VKWebAppGetAds").then(data => setAdvertisement(data))
     }, []);
 
     const onAllGradesChange = (e) =>
@@ -65,54 +69,63 @@ const App = () => {
                 <AppRoot>
                     <View activePanel="home">
                         <Panel id="home">
-                            <Div>
-                                <PanelHeader>
-                                    <PanelHeaderContent
-                                        before={<Avatar size={36} mode={'app'} src={ServiceIcon}/>}
-                                    >
-                                        Подсчёт оценок
-                                    </PanelHeaderContent>
-                                </PanelHeader>
+                            <PanelHeader separator={false}>
+                                <PanelHeaderContent
+                                    before={<Avatar size={36} mode={'app'} src={ServiceIcon}/>}
+                                >
+                                    Подсчёт оценок
+                                </PanelHeaderContent>
+                            </PanelHeader>
+                            <Group>
                                 <FormLayout>
                                     <FormItem top="Оценки">
-                                        <Input onChange={onAllGradesChange} value={grades.join(" ")}
+                                        <Input onChange={onAllGradesChange} inputmode="numeric"
+                                               value={grades.join(" ")}
                                                placeholder="Введите здесь оценки"/>
                                     </FormItem>
                                     <FormLayoutGroup mode="horizontal">
                                         <FormItem top="Колы">
                                             <Input type="number" value={grades.filter(x => x === 1).length}
-                                                   onChange={(e) => onSeparateGradesChange(e.target.value, 1)} min={0}
+                                                   onChange={(e) => onSeparateGradesChange(e.target.value, 1)}
+                                                   min={0}
                                                    max={500}/>
                                         </FormItem>
                                         <FormItem top="Двойки">
                                             <Input type="number" value={grades.filter(x => x === 2).length}
-                                                   onChange={(e) => onSeparateGradesChange(e.target.value, 2)} min={0}
+                                                   onChange={(e) => onSeparateGradesChange(e.target.value, 2)}
+                                                   min={0}
                                                    max={500}/>
                                         </FormItem>
+                                    </FormLayoutGroup>
+                                    <FormLayoutGroup mode="horizontal">
                                         <FormItem top="Тройки">
                                             <Input type="number" value={grades.filter(x => x === 3).length}
-                                                   onChange={(e) => onSeparateGradesChange(e.target.value, 3)} min={0}
+                                                   onChange={(e) => onSeparateGradesChange(e.target.value, 3)}
+                                                   min={0}
                                                    max={500}/>
                                         </FormItem>
                                         <FormItem top="Четвёрки">
                                             <Input type="number" value={grades.filter(x => x === 4).length}
-                                                   onChange={(e) => onSeparateGradesChange(e.target.value, 4)} min={0}
+                                                   onChange={(e) => onSeparateGradesChange(e.target.value, 4)}
+                                                   min={0}
                                                    max={500}/>
                                         </FormItem>
                                         <FormItem top="Пятёрки">
                                             <Input type="number" value={grades.filter(x => x === 5).length}
-                                                   onChange={(e) => onSeparateGradesChange(e.target.value, 5)} min={0}
+                                                   onChange={(e) => onSeparateGradesChange(e.target.value, 5)}
+                                                   min={0}
                                                    max={500}/>
                                         </FormItem>
                                     </FormLayoutGroup>
 
                                     <FormLayoutGroup mode="horizontal">
                                         <FormItem top="Рассчитанный балл">
-                                        <Input readOnly
+                                            <Input readOnly
                                                    value={toGrade(grades.reduce((p, c) => p + c, 0) / grades.length)}/>
                                         </FormItem>
                                         <FormItem top="Требуемый балл">
-                                            <Input type="number" min={1} max={5} step={0.1} value={required}
+                                            <Input type="number" min={1} max={5} step={0.1} inputmode="decimal"
+                                                   value={required}
                                                    onBlur={(e) => {
                                                        e.target.value = toGrade(parseFloat(e.target.value))
                                                        setRequired(parseFloat(e.target.value))
@@ -132,13 +145,18 @@ const App = () => {
                                 </FormLayout>
                                 <Separator wide style={{marginTop: 16, marginBottom: 8}}/>
                                 <Developers/>
-                            </Div>
+                                {advertisement !== null && <FixedLayout vertical="bottom">
+                                    <PromoBanner bannerData={advertisement} isCloseButtonHidden
+                                                 onClose={() => setAdvertisement(null)}/>
+                                </FixedLayout>}
+                            </Group>
                         </Panel>
                     </View>
                 </AppRoot>
             </AdaptivityProvider>
         </ConfigProvider>
-    );
+    )
+        ;
 }
 
 export default App;
