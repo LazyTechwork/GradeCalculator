@@ -77,7 +77,7 @@ const App = () => {
                                 </PanelHeaderContent>
                             </PanelHeader>
                             <Group>
-                                <Div>
+                                <Div style={{paddingBottom: 128}}>
                                     <FormLayout>
                                         <FormItem top="Оценки">
                                             <Input onChange={onAllGradesChange} inputmode="numeric"
