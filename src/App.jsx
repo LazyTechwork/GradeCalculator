@@ -4,7 +4,7 @@ import {
     AdaptivityProvider,
     Appearance,
     AppRoot,
-    Avatar, Button,
+    Avatar, Banner, Button,
     ConfigProvider,
     Div, FixedLayout,
     FormItem,
@@ -21,6 +21,8 @@ import {
 import '@vkontakte/vkui/dist/vkui.css';
 import ServiceIcon from './img/icon.svg';
 import Developers from "./components/Developers";
+import {Icon28FavoriteCircleFillYellow} from '@vkontakte/icons';
+import {Icon24FavoriteOutline} from '@vkontakte/icons';
 
 const App = () => {
     const [appearance, setAppearance] = useState(Appearance.LIGHT);
@@ -80,7 +82,7 @@ const App = () => {
                                 <Div style={{paddingBottom: 128}}>
                                     <FormLayout>
                                         <FormItem top="Оценки">
-                                            <Input onChange={onAllGradesChange} inputmode="numeric"
+                                            <Input onChange={onAllGradesChange} inputMode="numeric"
                                                    value={grades.join(" ")}
                                                    placeholder="Введите здесь оценки"/>
                                         </FormItem>
@@ -125,7 +127,7 @@ const App = () => {
                                                        value={toGrade(grades.reduce((p, c) => p + c, 0) / grades.length)}/>
                                             </FormItem>
                                             <FormItem top="Требуемый балл">
-                                                <Input type="number" min={1} max={5} step={0.1} inputmode="decimal"
+                                                <Input type="number" min={1} max={5} step={0.1} inputMode="decimal"
                                                        value={required}
                                                        onBlur={(e) => {
                                                            e.target.value = toGrade(parseFloat(e.target.value))
@@ -144,6 +146,20 @@ const App = () => {
                                             </FormItem>
                                         </FormLayoutGroup>
                                     </FormLayout>
+                                    <Banner
+                                        before={<Icon28FavoriteCircleFillYellow/>}
+                                        header="Добавь в избранное"
+                                        subheader={
+                                            <React.Fragment>
+                                                Чтобы не потерять такое удобное приложение &mdash; можно добавить его в
+                                                избранное!
+                                            </React.Fragment>
+                                        }
+                                        actions={<Button
+                                            onClick={() => bridge.supports("VKWebAppAddToFavorites") ? bridge.send("VKWebAppAddToFavorites") : false}
+                                            before={<Icon24FavoriteOutline/>}>Добавить в
+                                            избранное</Button>}
+                                    />
                                     <Separator wide style={{marginTop: 16, marginBottom: 8}}/>
                                     <Developers/>
                                 </Div>
