@@ -49,6 +49,20 @@ const App = () => {
 
     const toGrade = (num) => num ? num.toFixed(2) : "Невозможно рассчитать";
 
+    const requiredGradesCount = (t) => {
+        if (grades.length <= 0)
+            return 0
+        const tempGrades = [...grades];
+        let req = 0;
+        while (tempGrades.reduce((a, b) => a + b, 0) / tempGrades.length < required) {
+            tempGrades.push(t)
+            req++
+            if (req > 100)
+                return ">100"
+        }
+        return req
+    }
+
     return (
         <ConfigProvider appearance={appearance} scheme={scheme}>
             <AdaptivityProvider>
@@ -113,10 +127,10 @@ const App = () => {
                                     </FormLayoutGroup>
                                     <FormLayoutGroup mode="horizontal">
                                         <FormItem top="Необходимо четвёрок">
-                                            <Input readOnly value={"5"}/>
+                                            <Input readOnly value={requiredGradesCount(4)}/>
                                         </FormItem>
                                         <FormItem top="Необходимо пятёрок">
-                                            <Input readOnly value={"8"}/>
+                                            <Input readOnly value={requiredGradesCount(5)}/>
                                         </FormItem>
                                     </FormLayoutGroup>
                                 </FormLayout>
