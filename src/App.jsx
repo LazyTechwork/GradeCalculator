@@ -146,7 +146,7 @@ const App = () => {
                                             </FormItem>
                                         </FormLayoutGroup>
                                     </FormLayout>
-                                    <Banner
+                                    {/*<Banner
                                         before={<Icon28FavoriteCircleFillYellow/>}
                                         header="Добавь в избранное"
                                         subheader={
@@ -156,10 +156,10 @@ const App = () => {
                                             </React.Fragment>
                                         }
                                         actions={<Button
-                                            onClick={() => bridge.supports("VKWebAppAddToFavorites") ? bridge.send("VKWebAppAddToFavorites") : false}
+                                            onClick={() => bridge.send("VKWebAppAddToFavorites").then(data => console.log(data))}
                                             before={<Icon24FavoriteOutline/>}>Добавить в
                                             избранное</Button>}
-                                    />
+                                    />*/}
                                     <Separator wide style={{marginTop: 16, marginBottom: 8}}/>
                                     <Developers/>
                                 </Div>
