@@ -5,14 +5,11 @@ import {
     Appearance,
     AppRoot,
     Avatar,
-    Banner,
-    Button,
     ConfigProvider,
     Div,
     FormItem,
     FormLayout,
     FormLayoutGroup,
-    Header,
     Input,
     Panel,
     PanelHeader,
@@ -23,7 +20,6 @@ import {
 } from '@vkontakte/vkui';
 import '@vkontakte/vkui/dist/vkui.css';
 import ServiceIcon from './img/icon.svg';
-import {Icon24FavoriteOutline, Icon24MessageOutline} from '@vkontakte/icons';
 import Developers from "./components/Developers";
 
 const App = () => {
@@ -51,7 +47,7 @@ const App = () => {
 
     const requiredGradesCount = (t) => {
         if (grades.length <= 0)
-            return 0
+            return "Невозможно рассчитать"
         const tempGrades = [...grades];
         let req = 0;
         while (tempGrades.reduce((a, b) => a + b, 0) / tempGrades.length < required) {
@@ -112,7 +108,7 @@ const App = () => {
 
                                     <FormLayoutGroup mode="horizontal">
                                         <FormItem top="Рассчитанный балл">
-                                            <Input readOnly
+                                        <Input readOnly
                                                    value={toGrade(grades.reduce((p, c) => p + c, 0) / grades.length)}/>
                                         </FormItem>
                                         <FormItem top="Требуемый балл">
