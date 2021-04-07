@@ -24,11 +24,13 @@ import {
 import '@vkontakte/vkui/dist/vkui.css';
 import ServiceIcon from './img/icon.svg';
 import {Icon24FavoriteOutline, Icon24MessageOutline} from '@vkontakte/icons';
+import Developers from "./components/Developers";
 
 const App = () => {
     const [appearance, setAppearance] = useState(Appearance.LIGHT);
     const [scheme, setScheme] = useState(Scheme.BRIGHT_LIGHT);
     const [grades, setGrades] = useState([]);
+    const [required, setRequired] = useState(3.5);
     useEffect(() => {
         bridge.subscribe(({detail: {type, data}}) => {
             if (type === 'VKWebAppUpdateConfig') {
@@ -100,7 +102,12 @@ const App = () => {
                                                    value={toGrade(grades.reduce((p, c) => p + c, 0) / grades.length)}/>
                                         </FormItem>
                                         <FormItem top="Требуемый балл">
-                                            <Input type="number" min={1} max={5} step={0.1} defaultValue={4.5}
+                                            <Input type="number" min={1} max={5} step={0.1} value={required}
+                                                   onBlur={(e) => {
+                                                       e.target.value = toGrade(parseFloat(e.target.value))
+                                                       setRequired(parseFloat(e.target.value))
+                                                   }}
+                                                   onChange={(e) => setRequired(parseFloat(e.target.value))}
                                                    placeholder="Введите здесь нужный балл"/>
                                         </FormItem>
                                     </FormLayoutGroup>
@@ -114,21 +121,7 @@ const App = () => {
                                     </FormLayoutGroup>
                                 </FormLayout>
                                 <Separator wide style={{marginTop: 16, marginBottom: 8}}/>
-                                <Header>Разработчики</Header>
-                                <Banner
-                                    before={<Avatar size={96} mode="image"
-                                                    src="https://sun1-95.userapi.com/s/v1/ig2/PdhJ0tQePfaEed-XUUpfysiQbL69Qd3OP97eyenSj_QC7n5HcOB6_qjOZVr4KppPVagSFabgCeQDKNe5XwQ7IrvY.jpg?size=200x0&quality=96&crop=0,0,2160,2160&ava=1"/>}
-                                    header="ФРИИС"
-                                    subheader="Фонд развития информационных и интеллектуальных систем"
-                                    actions={<Button before={<Icon24FavoriteOutline/>}>Подписаться</Button>}
-                                />
-                                <Banner
-                                    before={<Avatar size={96} mode="image"
-                                                    src="https://sun1-17.userapi.com/s/v1/ig2/k8gq8e-VsnNptU4cZ2m2xLFVQd1QRtl1B9P_duk2G0W0hVp5yGbTB7Goq7-Pe3OG4-3SYNh9kqQBWsYZ3Dp1DKHP.jpg?size=200x0&quality=96&crop=392,66,1136,1136&ava=1"/>}
-                                    header="Петров Иван"
-                                    subheader="Разработчик"
-                                    actions={<Button before={<Icon24MessageOutline/>}>Написать</Button>}
-                                />
+                                <Developers/>
                             </Div>
                         </Panel>
                     </View>
