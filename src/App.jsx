@@ -24,6 +24,7 @@ import {
 import '@vkontakte/vkui/dist/vkui.css';
 import ServiceIcon from './img/icon.svg';
 import Developers from "./components/Developers";
+import {isNumber} from "@vkontakte/vkjs";
 
 const App = () => {
     const [appearance, setAppearance] = useState(Appearance.LIGHT);
@@ -67,6 +68,10 @@ const App = () => {
         }
         return req
     }
+
+    const requiredGradesCountStatus = (result) =>
+        result === ">100" || isNumber(result) && result !== 0 ? "error" : result === 0 ? "valid" : "default"
+
 
     const requiredRestrictions = (e) => {
         let val = parseFloat(e.target.value)
@@ -151,10 +156,12 @@ const App = () => {
                                             </FormItem>
                                         </FormLayoutGroup>
                                         <FormLayoutGroup mode="horizontal">
-                                            <FormItem top="Необходимо четвёрок">
+                                            <FormItem status={requiredGradesCountStatus(requiredGradesCount(4))}
+                                                      top="Необходимо четвёрок">
                                                 <Input readOnly value={requiredGradesCount(4)}/>
                                             </FormItem>
-                                            <FormItem top="Необходимо пятёрок">
+                                            <FormItem status={requiredGradesCountStatus(requiredGradesCount(5))}
+                                                      top="Необходимо пятёрок">
                                                 <Input readOnly value={requiredGradesCount(5)}/>
                                             </FormItem>
                                         </FormLayoutGroup>
