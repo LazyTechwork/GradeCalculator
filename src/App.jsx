@@ -4,16 +4,19 @@ import {
     AdaptivityProvider,
     Appearance,
     AppRoot,
-    Avatar, Banner, Button,
+    Avatar,
     ConfigProvider,
-    Div, FixedLayout,
+    Div,
+    FixedLayout,
     FormItem,
     FormLayout,
-    FormLayoutGroup, Group,
+    FormLayoutGroup,
+    Group,
     Input,
     Panel,
     PanelHeader,
-    PanelHeaderContent, PromoBanner,
+    PanelHeaderContent,
+    PromoBanner,
     Scheme,
     Separator,
     View
@@ -21,8 +24,6 @@ import {
 import '@vkontakte/vkui/dist/vkui.css';
 import ServiceIcon from './img/icon.svg';
 import Developers from "./components/Developers";
-import {Icon28FavoriteCircleFillYellow} from '@vkontakte/icons';
-import {Icon24FavoriteOutline} from '@vkontakte/icons';
 
 const App = () => {
     const [appearance, setAppearance] = useState(Appearance.LIGHT);
@@ -36,7 +37,6 @@ const App = () => {
                 setAppearance(data.appearance || Appearance.LIGHT)
                 setScheme(data.scheme || Scheme.BRIGHT_LIGHT)
             }
-            console.log(type, data);
         });
         if (bridge.supports("VKWebAppGetAds"))
             bridge.send("VKWebAppGetAds").then(data => setAdvertisement(data))
@@ -46,9 +46,12 @@ const App = () => {
         setGrades(e.target.value.replace(/[^1-5]/g, "").split("").map(v => parseInt(v)).sort())
 
 
-    const onSeparateGradesChange = (val, t) =>
-        setGrades(grades.filter(x => x !== t).concat(new Array(parseInt(val)).fill(t)).sort())
-
+    const onSeparateGradesChange = (val, t) => {
+        if (!val)
+            return false
+        val = parseInt(val) > 100 ? 100 : parseInt(val)
+        setGrades(grades.filter(x => x !== t).concat(new Array(val).fill(t)).sort())
+    }
     const toGrade = (num) => num ? num.toFixed(2) : "Невозможно рассчитать";
 
     const requiredGradesCount = (t) => {
@@ -63,6 +66,15 @@ const App = () => {
                 return ">100"
         }
         return req
+    }
+
+    const requiredRestrictions = (e) => {
+        let val = parseFloat(e.target.value)
+        if (val > 5)
+            val = 5
+        else if (val < 1)
+            val = 1
+        return val
     }
 
     return (
@@ -91,13 +103,13 @@ const App = () => {
                                                 <Input type="number" value={grades.filter(x => x === 1).length}
                                                        onChange={(e) => onSeparateGradesChange(e.target.value, 1)}
                                                        min={0}
-                                                       max={500}/>
+                                                       max={100}/>
                                             </FormItem>
                                             <FormItem top="Двойки">
                                                 <Input type="number" value={grades.filter(x => x === 2).length}
                                                        onChange={(e) => onSeparateGradesChange(e.target.value, 2)}
                                                        min={0}
-                                                       max={500}/>
+                                                       max={100}/>
                                             </FormItem>
                                         </FormLayoutGroup>
                                         <FormLayoutGroup mode="horizontal">
@@ -105,19 +117,19 @@ const App = () => {
                                                 <Input type="number" value={grades.filter(x => x === 3).length}
                                                        onChange={(e) => onSeparateGradesChange(e.target.value, 3)}
                                                        min={0}
-                                                       max={500}/>
+                                                       max={100}/>
                                             </FormItem>
                                             <FormItem top="Четвёрки">
                                                 <Input type="number" value={grades.filter(x => x === 4).length}
                                                        onChange={(e) => onSeparateGradesChange(e.target.value, 4)}
                                                        min={0}
-                                                       max={500}/>
+                                                       max={100}/>
                                             </FormItem>
                                             <FormItem top="Пятёрки">
                                                 <Input type="number" value={grades.filter(x => x === 5).length}
                                                        onChange={(e) => onSeparateGradesChange(e.target.value, 5)}
                                                        min={0}
-                                                       max={500}/>
+                                                       max={100}/>
                                             </FormItem>
                                         </FormLayoutGroup>
 
@@ -130,10 +142,11 @@ const App = () => {
                                                 <Input type="number" min={1} max={5} step={0.1} inputMode="decimal"
                                                        value={required}
                                                        onBlur={(e) => {
-                                                           e.target.value = toGrade(parseFloat(e.target.value))
-                                                           setRequired(parseFloat(e.target.value))
+                                                           const val = requiredRestrictions(e)
+                                                           e.target.value = toGrade(val)
+                                                           setRequired(val)
                                                        }}
-                                                       onChange={(e) => setRequired(parseFloat(e.target.value))}
+                                                       onChange={(e) => setRequired(requiredRestrictions(e))}
                                                        placeholder="Введите здесь нужный балл"/>
                                             </FormItem>
                                         </FormLayoutGroup>
