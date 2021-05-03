@@ -137,7 +137,7 @@ const App = () => {
                                 </PanelHeaderContent>
                             </PanelHeader>
                             <Group>
-                                <Div style={{paddingBottom: 128}}>
+                                <Div style={advertisement && {paddingBottom: 128}}>
                                     <FormLayout>
                                         <FormItem top="Оценки">
                                             <Input onChange={onAllGradesChange} inputMode="numeric"
