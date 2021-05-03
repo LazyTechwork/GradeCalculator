@@ -52,11 +52,29 @@ const App = () => {
 
     const onAllGradesChange = (e) => {
         let temp = e.target.value.replace(/[^1-5]/g, "").split("").map(v => parseInt(v)).sort()
-        onSeparateGradesChange(temp.filter(x => x === 1).length, 1)
-        onSeparateGradesChange(temp.filter(x => x === 2).length, 2)
-        onSeparateGradesChange(temp.filter(x => x === 3).length, 3)
-        onSeparateGradesChange(temp.filter(x => x === 4).length, 4)
-        onSeparateGradesChange(temp.filter(x => x === 5).length, 5)
+        let countOf1 = temp.filter(x => x === 1).length
+        let countOf2 = temp.filter(x => x === 2).length
+        let countOf3 = temp.filter(x => x === 3).length
+        let countOf4 = temp.filter(x => x === 4).length
+        let countOf5 = temp.filter(x => x === 5).length
+        if (countOf1 > 100)
+            countOf1 = 100
+        if (countOf2 > 100)
+            countOf2 = 100
+        if (countOf3 > 100)
+            countOf3 = 100
+        if (countOf4 > 100)
+            countOf4 = 100
+        if (countOf5 > 100)
+            countOf5 = 100
+
+        setGrades([]
+            .concat(new Array(countOf1).fill(1))
+            .concat(new Array(countOf2).fill(2))
+            .concat(new Array(countOf3).fill(3))
+            .concat(new Array(countOf4).fill(4))
+            .concat(new Array(countOf5).fill(5))
+        )
     }
 
     const toGrade = (num) => num ? num.toFixed(2) : "Невозможно рассчитать";
