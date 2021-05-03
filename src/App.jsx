@@ -69,8 +69,25 @@ const App = () => {
         return req
     }
 
+    const canbeGradesCount = (t) => {
+        if (grades.length <= 0)
+            return "Невозможно рассчитать"
+        const tempGrades = [...grades];
+        let req = 0;
+        while (tempGrades.reduce((a, b) => a + b, 0) / tempGrades.length >= required) {
+            tempGrades.push(t)
+            req++
+            if (req > 100)
+                return ">100"
+        }
+        return req
+    }
+
     const requiredGradesCountStatus = (result) =>
         result === ">100" || isNumber(result) && result !== 0 ? "error" : result === 0 ? "valid" : "default"
+
+    const canbeGradesCountStatus = (result) =>
+        result === ">100" || isNumber(result) && result !== 0 ? "valid" : result === 0 ? "error" : "default"
 
 
     const requiredRestrictions = (e) => {
@@ -155,6 +172,7 @@ const App = () => {
                                                        placeholder="Введите здесь нужный балл"/>
                                             </FormItem>
                                         </FormLayoutGroup>
+                                        {grades.reduce((p, c) => p + c, 0) / grades.length < required &&
                                         <FormLayoutGroup mode="horizontal">
                                             <FormItem status={requiredGradesCountStatus(requiredGradesCount(4))}
                                                       top="Необходимо четвёрок">
@@ -165,6 +183,19 @@ const App = () => {
                                                 <Input readOnly value={requiredGradesCount(5)}/>
                                             </FormItem>
                                         </FormLayoutGroup>
+                                        }
+                                        {grades.reduce((p, c) => p + c, 0) / grades.length >= required &&
+                                        <FormLayoutGroup mode="horizontal">
+                                            <FormItem status={canbeGradesCountStatus(canbeGradesCount(2) - 1)}
+                                                      top="Можно получить двоек">
+                                                <Input readOnly value={canbeGradesCount(2) - 1}/>
+                                            </FormItem>
+                                            <FormItem status={canbeGradesCountStatus(canbeGradesCount(3) - 1)}
+                                                      top="Можно получить троек">
+                                                <Input readOnly value={canbeGradesCount(3) - 1}/>
+                                            </FormItem>
+                                        </FormLayoutGroup>
+                                        }
                                     </FormLayout>
                                     {/*<Banner
                                         before={<Icon28FavoriteCircleFillYellow/>}
@@ -184,7 +215,7 @@ const App = () => {
                                     <Developers/>
                                 </Div>
                                 {advertisement !== null && <FixedLayout vertical="bottom">
-                                    <PromoBanner bannerData={advertisement} isCloseButtonHidden
+                                    <PromoBanner bannerData={advertisement}
                                                  onClose={() => setAdvertisement(null)}/>
                                 </FixedLayout>}
                             </Group>
