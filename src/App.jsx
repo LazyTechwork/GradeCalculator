@@ -43,16 +43,22 @@ const App = () => {
             bridge.send("VKWebAppGetAds").then(data => setAdvertisement(data))
     }, []);
 
-    const onAllGradesChange = (e) =>
-        setGrades(e.target.value.replace(/[^1-5]/g, "").split("").map(v => parseInt(v)).sort())
-
-
     const onSeparateGradesChange = (val, t) => {
-        if (!val)
+        if (!isNumber(val) && !val)
             return false
         val = parseInt(val) > 100 ? 100 : parseInt(val)
         setGrades(grades.filter(x => x !== t).concat(new Array(val).fill(t)).sort())
     }
+
+    const onAllGradesChange = (e) => {
+        let temp = e.target.value.replace(/[^1-5]/g, "").split("").map(v => parseInt(v)).sort()
+        onSeparateGradesChange(temp.filter(x => x === 1).length, 1)
+        onSeparateGradesChange(temp.filter(x => x === 2).length, 2)
+        onSeparateGradesChange(temp.filter(x => x === 3).length, 3)
+        onSeparateGradesChange(temp.filter(x => x === 4).length, 4)
+        onSeparateGradesChange(temp.filter(x => x === 5).length, 5)
+    }
+
     const toGrade = (num) => num ? num.toFixed(2) : "Невозможно рассчитать";
 
     const requiredGradesCount = (t) => {
