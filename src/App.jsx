@@ -185,11 +185,11 @@ const App = () => {
                                         </FormLayoutGroup>
 
                                         <FormLayoutGroup mode="horizontal">
-                                            <FormItem top="Рассчитанный балл">
+                                            <FormItem top={formItemTop("Рассчитанный балл")}>
                                                 <Input readOnly
                                                        value={toGrade(grades.reduce((p, c) => p + c, 0) / grades.length)}/>
                                             </FormItem>
-                                            <FormItem top="Требуемый балл">
+                                            <FormItem top={formItemTop("Требуемый балл")}>
                                                 <Input type="number" min={1} max={5} step={0.1} inputMode="decimal"
                                                        value={required}
                                                        onBlur={(e) => {
