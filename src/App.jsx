@@ -19,7 +19,8 @@ import {
     PromoBanner,
     Scheme,
     Separator,
-    View
+    View,
+    Subhead, Textarea
 } from '@vkontakte/vkui';
 import '@vkontakte/vkui/dist/vkui.css';
 import ServiceIcon from './img/icon.svg';
@@ -45,8 +46,9 @@ const App = () => {
 
     const onSeparateGradesChange = (val, t) => {
         if (!isNumber(val) && !val)
-            return false
-        val = parseInt(val) > 100 ? 100 : parseInt(val)
+            val = 0
+        else
+            val = parseInt(val) > 100 ? 100 : parseInt(val)
         setGrades(grades.filter(x => x !== t).concat(new Array(val).fill(t)).sort())
     }
 
@@ -92,6 +94,9 @@ const App = () => {
         }
         return req
     }
+
+    const formItemTop = (text) => <Subhead weight="regular" vkuiClass="FormItem__top"
+                                           className="FormItem__top__wrapped">{text}</Subhead>
 
     const canbeGradesCount = (t) => {
         if (grades.length <= 0)
@@ -140,9 +145,9 @@ const App = () => {
                                 <Div style={advertisement && {paddingBottom: 128}}>
                                     <FormLayout>
                                         <FormItem top="Оценки">
-                                            <Input onChange={onAllGradesChange} inputMode="numeric"
-                                                   value={grades.join(" ")}
-                                                   placeholder="Введите здесь оценки"/>
+                                            <Textarea onChange={onAllGradesChange} inputMode="numeric"
+                                                      value={grades.join(" ")}
+                                                      placeholder="Введите здесь оценки"/>
                                         </FormItem>
                                         <FormLayoutGroup mode="horizontal">
                                             <FormItem top="Колы">
@@ -199,11 +204,11 @@ const App = () => {
                                         {grades.reduce((p, c) => p + c, 0) / grades.length < required &&
                                         <FormLayoutGroup mode="horizontal">
                                             <FormItem status={requiredGradesCountStatus(requiredGradesCount(4))}
-                                                      top="Необходимо четвёрок">
+                                                      top={formItemTop("Необходимо четвёрок")} multiline>
                                                 <Input readOnly value={requiredGradesCount(4)}/>
                                             </FormItem>
                                             <FormItem status={requiredGradesCountStatus(requiredGradesCount(5))}
-                                                      top="Необходимо пятёрок">
+                                                      top={formItemTop("Необходимо пятёрок")} multiline>
                                                 <Input readOnly value={requiredGradesCount(5)}/>
                                             </FormItem>
                                         </FormLayoutGroup>
@@ -211,11 +216,11 @@ const App = () => {
                                         {grades.reduce((p, c) => p + c, 0) / grades.length >= required &&
                                         <FormLayoutGroup mode="horizontal">
                                             <FormItem status={canbeGradesCountStatus(canbeGradesCount(2) - 1)}
-                                                      top="Можно получить двоек">
+                                                      top={formItemTop("Можно получить двоек")} multiline>
                                                 <Input readOnly value={canbeGradesCount(2) - 1}/>
                                             </FormItem>
                                             <FormItem status={canbeGradesCountStatus(canbeGradesCount(3) - 1)}
-                                                      top="Можно получить троек">
+                                                      top={formItemTop("Можно получить троек")} multiline>
                                                 <Input readOnly value={canbeGradesCount(3) - 1}/>
                                             </FormItem>
                                         </FormLayoutGroup>
